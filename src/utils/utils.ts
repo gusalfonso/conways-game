@@ -1,5 +1,5 @@
-export const ROWS = 40
-export const COLS = 50
+export const ROWS = 35
+export const COLS = 60
 
 
 export const createEmptyGrid = () => {

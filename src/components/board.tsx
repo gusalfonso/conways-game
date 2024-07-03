@@ -1,4 +1,4 @@
-import { useCallback, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { createEmptyGrid, COLS, ROWS, DIRECTIONS } from "../utils/utils";
 import { twMerge } from "tailwind-merge";
 import { PlayPauseButton } from "./PlayPauseButton";
@@ -7,6 +7,32 @@ import { Button } from "./Button";
 function Board() {
   const [grid, setGrid] = useState<number[][]>(createEmptyGrid());
   const [active, setActive] = useState(false);
+  const [mouseDown, setMouseDown] = useState(false);
+
+  const getGridSize = () => {
+    const size = Math.min(
+      (window.innerHeight - 200) / ROWS,
+      (window.innerWidth - 32) / COLS,
+      15
+    )
+    return size
+  }
+
+
+  const [cellSize, setSize] = useState(getGridSize())
+
+  useEffect(() => {
+    const handleResize = () => {
+      setSize(getGridSize())
+    }
+    window.addEventListener('resize', handleResize);
+    return () => {
+      window.removeEventListener('resize', handleResize)
+    }
+  }, []
+  ) 
+
+
 
   const activeRef = useRef(active);
   activeRef.current = active;
@@ -38,20 +64,98 @@ function Board() {
           });
 
           if (liveNeighbors < 2 || liveNeighbors > 3) {
-              newGrid[row][col] = 0;
-            } else if (currentGrid[row][col] === 0 && liveNeighbors === 3) {
-              newGrid[row][col] = 1;
-            }
+            newGrid[row][col] = 0;
+          } else if (currentGrid[row][col] === 0 && liveNeighbors === 3) {
+            newGrid[row][col] = 1;
+          }
         }
       }
       return newGrid;
     });
-    setTimeout(runGame, 500);
+    setTimeout(runGame, 200);
   }, [activeRef, setGrid]);
 
+  const handleMouseDown = () => {
+    setMouseDown(true);
+  };
+
+  const handleMouseUp = () => {
+    setMouseDown(false);
+  };
+
+  const handleToggle = (row: number, col: number) => {
+    if (mouseDown) {
+      toggleCell(row, col);
+    }
+  };
+
+  const toggleCell = (rowToToggle: number, colToToggle: number) => {
+    const newGrid = grid.map((row, rowIndex) =>
+      row.map((cell, colIndex) =>
+        rowIndex === rowToToggle && colIndex === colToToggle
+          ? cell
+            ? 0
+            : 1
+          : cell
+      )
+    );
+    setGrid(newGrid);
+  };
+
   return (
-    <div className="">
-      <div className="flex gap-4 items-center">
+    <>
+      <h1 className="text-xl">Conway's Game of Life</h1>
+      <div
+        style={{
+          display: "grid",
+          gridTemplateColumns: `repeat(${COLS}, ${cellSize}px)`,
+          gridTemplateRows: `repeat(${ROWS}, ${cellSize}px)`,
+        }}
+      >
+        {grid.map((rows, originalRowIndex) =>
+          rows.map((col, originalColIndex) => (
+            <button
+              onMouseDown={handleMouseDown}
+              onMouseUp={handleMouseUp}
+              onMouseEnter={() => {
+                handleToggle(originalRowIndex, originalColIndex);
+              }}
+              key={`${originalRowIndex}-${originalColIndex}`}
+              onClick={() => {
+                toggleCell(originalRowIndex, originalColIndex);
+              }}
+              className={twMerge(
+                "border border-slate-200",
+                grid[originalRowIndex][originalColIndex]
+                  ? "bg-slate-500"
+                  : "bg-slate-100"
+              )}
+            />
+          ))
+        )}
+      </div>
+      <div className="flex gap-4 py-1">
+        <Button
+          onClick={() => {
+            const rows = [];
+            for (let i = 0; i < ROWS; i++) {
+              rows.push(
+                Array.from(Array(COLS), () => (Math.random() > 0.75 ? 1 : 0))
+              );
+            }
+            setGrid(rows);
+            // console.log(rows)
+          }}
+        >
+          Seed
+        </Button>
+        <Button
+          onClick={() => {
+            setGrid(createEmptyGrid());
+          }}
+        >
+          Clear
+        </Button>
         <PlayPauseButton
           active={active}
           onClick={() => {
@@ -63,39 +167,8 @@ function Board() {
             }
           }}
         />
-        <Button
-        onClick={() => {
-          const rows = []
-          for (let i = 0; i< ROWS; i++) {
-            rows.push(Array.from(Array(COLS), () => (Math.random() > 0.75 ? 1 : 0)))
-          }
-          setGrid(rows)
-          // console.log(rows)
-        }}
-        >Seed</Button>
       </div>
-      <div
-        style={{
-          display: "grid",
-          gridTemplateColumns: `repeat(${COLS}, 15px)`,
-          gridTemplateRows: `repeat(${ROWS}, 15px)`,
-        }}
-      >
-        {grid.map((rows, originalRowIndex) =>
-          rows.map((col, originalColIndex) => (
-            <button
-              key={`${originalRowIndex}-${originalColIndex}`}
-              className={twMerge(
-                "border border-white",
-                grid[originalRowIndex][originalColIndex]
-                  ? "bg-purple-600"
-                  : "bg-slate-900"
-              )}
-            />
-          ))
-        )}
-      </div>
-    </div>
+    </>
   );
 }
 
