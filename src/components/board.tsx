@@ -94,7 +94,7 @@ const Board: React.FC = () => {
         }
       >
         {grid.map((rows, originalRowIndex) =>
-          rows.map((col, originalColIndex) => (
+          rows.map((originalColIndex) => (
             <button
               onMouseDown={handleMouseDown}
               onMouseUp={handleMouseUp}
