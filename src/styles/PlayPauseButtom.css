@@ -1,0 +1,30 @@
+.play-pause-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.8rem; /* 32px */
+  height: 1.8rem; /* 32px */
+  border-radius: 5px;
+  background-color: transparent;
+  border: none;
+  cursor: pointer;
+  transition: background-color 0.3s ease, color 0.3s ease;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.play-pause-button.active {
+  background-color: #222; /* Light gray */
+}
+
+.play-pause-button .icon {
+  color: white;
+  filter: drop-shadow(0 0 5px #ccc);
+}
+
+.play-pause-button:hover {
+  background-color: white;
+}
+
+.play-pause-button:hover .icon {
+  color: #222;
+}

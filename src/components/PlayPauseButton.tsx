@@ -1,16 +1,23 @@
 import { BsFillPauseFill, BsFillPlayFill } from "react-icons/bs";
-import { twMerge } from "tailwind-merge";
+import "../styles/PlayPauseButtom.css"; // Asegúrate de que este archivo exista
 
-export function PlayPauseButton({onClick, active}: {onClick: () => void, active:boolean}) {
-    return (
-        <button
-        className={twMerge("transition ease-in-out flex items-center justify-center h-8 w-8 rounded-full shadow-md",
-            active ? "bg-gray-300 hover:bg-gray-400" : "bg-green-400 hover:bg-green-500"
-        )}
-        onClick={onClick}>
-            {
-                active ? <BsFillPauseFill className="h-6 w-6"/> : <BsFillPlayFill className="h-6 w-6"/>
-            }
-        </button>
-    )
+export function PlayPauseButton({
+  onClick,
+  active,
+}: {
+  onClick: () => void;
+  active: boolean;
+}) {
+  return (
+    <button
+      className={`play-pause-button ${active ? "active" : ""}`}
+      onClick={onClick}
+    >
+      {active ? (
+        <BsFillPauseFill className="icon" />
+      ) : (
+        <BsFillPlayFill className="icon" />
+      )}
+    </button>
+  );
 }

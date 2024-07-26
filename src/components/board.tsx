@@ -1,44 +1,18 @@
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useState, useRef } from "react";
 import { createEmptyGrid, COLS, ROWS, DIRECTIONS } from "../utils/utils";
-import { twMerge } from "tailwind-merge";
 import { PlayPauseButton } from "./PlayPauseButton";
 import { Button } from "./Button";
+import "../styles/Board.css";
 
-function Board() {
+const Board: React.FC = () => {
   const [grid, setGrid] = useState<number[][]>(createEmptyGrid());
   const [active, setActive] = useState(false);
   const [mouseDown, setMouseDown] = useState(false);
-
-  const getGridSize = () => {
-    const size = Math.min(
-      (window.innerHeight - 200) / ROWS,
-      (window.innerWidth - 32) / COLS,
-      15
-    )
-    return size
-  }
-
-
-  const [cellSize, setSize] = useState(getGridSize())
-
-  useEffect(() => {
-    const handleResize = () => {
-      setSize(getGridSize())
-    }
-    window.addEventListener('resize', handleResize);
-    return () => {
-      window.removeEventListener('resize', handleResize)
-    }
-  }, []
-  ) 
-
-
 
   const activeRef = useRef(active);
   activeRef.current = active;
 
   const runGame = useCallback(() => {
-    // console.log("Estacorriendo")
     if (!activeRef.current) {
       return;
     }
@@ -46,7 +20,6 @@ function Board() {
       const newGrid = currentGrid.map((arr) => [...arr]);
       for (let row = 0; row < ROWS; row++) {
         for (let col = 0; col < COLS; col++) {
-          // console.log(`fila ${row}, columna ${col}`)
           let liveNeighbors = 0;
 
           DIRECTIONS.forEach(([directionX, directionY]) => {
@@ -72,8 +45,11 @@ function Board() {
       }
       return newGrid;
     });
-    setTimeout(runGame, 200);
-  }, [activeRef, setGrid]);
+    const timerId = setTimeout(runGame, 200);
+
+    // Cleanup function to clear the timeout if the component unmounts
+    return () => clearTimeout(timerId);
+  }, []);
 
   const handleMouseDown = () => {
     setMouseDown(true);
@@ -103,38 +79,35 @@ function Board() {
   };
 
   return (
-    <>
-      <h1 className="text-xl">Conway's Game of Life</h1>
+    <div className="board-container">
+      <h1>Conway's Life Game</h1>
       <div
-        style={{
-          display: "grid",
-          gridTemplateColumns: `repeat(${COLS}, ${cellSize}px)`,
-          gridTemplateRows: `repeat(${ROWS}, ${cellSize}px)`,
-        }}
+        className="board"
+        style={
+          {
+            "--rows": ROWS,
+            "--cols": COLS,
+          } as React.CSSProperties
+        }
       >
         {grid.map((rows, originalRowIndex) =>
           rows.map((col, originalColIndex) => (
             <button
               onMouseDown={handleMouseDown}
               onMouseUp={handleMouseUp}
-              onMouseEnter={() => {
-                handleToggle(originalRowIndex, originalColIndex);
-              }}
+              onMouseEnter={() =>
+                handleToggle(originalRowIndex, originalColIndex)
+              }
               key={`${originalRowIndex}-${originalColIndex}`}
-              onClick={() => {
-                toggleCell(originalRowIndex, originalColIndex);
-              }}
-              className={twMerge(
-                "border border-slate-200",
-                grid[originalRowIndex][originalColIndex]
-                  ? "bg-slate-500"
-                  : "bg-slate-100"
-              )}
+              onClick={() => toggleCell(originalRowIndex, originalColIndex)}
+              className={`cell ${
+                grid[originalRowIndex][originalColIndex] ? "alive" : "dead"
+              }`}
             />
           ))
         )}
       </div>
-      <div className="flex gap-4 py-1">
+      <div className="controls">
         <Button
           onClick={() => {
             const rows = [];
@@ -144,7 +117,6 @@ function Board() {
               );
             }
             setGrid(rows);
-            // console.log(rows)
           }}
         >
           Seed
@@ -159,17 +131,18 @@ function Board() {
         <PlayPauseButton
           active={active}
           onClick={() => {
-            setActive(!active);
-            if (!active) {
-              activeRef.current = true;
-              // console.log("Estacorriendo")
-              runGame();
-            }
+            setActive((prevActive) => {
+              const newActive = !prevActive;
+              if (newActive) {
+                runGame();
+              }
+              return newActive;
+            });
           }}
         />
       </div>
-    </>
+    </div>
   );
-}
+};
 
 export default Board;

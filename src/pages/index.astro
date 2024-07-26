@@ -1,14 +1,15 @@
 ---
-import Layout from '../layouts/Layout.astro';
-import Board from '../components/Board'
+import Layout from "../layouts/Layout.astro";
+import Board from "../components/Board";
+import Monitor from "../components/Monitor";
+import "../styles/index.css";
 ---
 
 <Layout title="Conway's Game">
-	<main class="min-h-screen bg-blue-200 w-full flex flex-col justify-center items-center gap-4 p-4">
-        <Board client:load/>
-    </main>
+  <main class="main-container">
+    <Monitor client:only />
+    <!-- <Board client:only /> -->
+  </main>
 </Layout>
 
-<style>
-	
-</style>
+<style></style>
