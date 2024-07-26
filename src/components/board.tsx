@@ -1,4 +1,4 @@
-import { useCallback, useState, useRef } from "react";
+import { useCallback, useState, useRef, useEffect } from "react";
 import { createEmptyGrid, COLS, ROWS, DIRECTIONS } from "../utils/utils";
 import { PlayPauseButton } from "./PlayPauseButton";
 import { Button } from "./Button";
@@ -13,9 +13,8 @@ const Board: React.FC = () => {
   activeRef.current = active;
 
   const runGame = useCallback(() => {
-    if (!activeRef.current) {
-      return;
-    }
+    if (!activeRef.current) return;
+
     setGrid((currentGrid) => {
       const newGrid = currentGrid.map((arr) => [...arr]);
       for (let row = 0; row < ROWS; row++) {
@@ -45,11 +44,15 @@ const Board: React.FC = () => {
       }
       return newGrid;
     });
-    const timerId = setTimeout(runGame, 200);
 
-    // Cleanup function to clear the timeout if the component unmounts
-    return () => clearTimeout(timerId);
+    setTimeout(runGame, 200);
   }, []);
+
+  useEffect(() => {
+    if (active) {
+      runGame();
+    }
+  }, [active, runGame]);
 
   const handleMouseDown = () => {
     setMouseDown(true);
@@ -131,13 +134,7 @@ const Board: React.FC = () => {
         <PlayPauseButton
           active={active}
           onClick={() => {
-            setActive((prevActive) => {
-              const newActive = !prevActive;
-              if (newActive) {
-                runGame();
-              }
-              return newActive;
-            });
+            setActive(!active);
           }}
         />
       </div>

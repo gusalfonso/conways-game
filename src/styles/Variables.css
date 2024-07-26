@@ -1,0 +1,22 @@
+:root {
+  --monitor-light-color: #d3ccbc;
+  --monitor-dark-color: #ccc5b3;
+  --monitor-shadow-light: #d7d4c1;
+  --monitor-shadow-medium: #b7b19b;
+  --monitor-shadow-dark: #908e7a;
+  --monitor-shadow-very-dark: #6e6d5f;
+  --monitor-gradient: linear-gradient(
+    to bottom,
+    var(--monitor-light-color),
+    var(--monitor-dark-color)
+  );
+  --monitor-shadow-texture: 2px -2px 30px #493e2a33 inset,
+    -2px -2px 30px #493e2a33 inset, 1px -1px 1px #493e2a33 inset,
+    -1px -1px 1px #493e2a33 inset, 0 2px 30px #ddd inset;
+}
+
+@font-face {
+  font-family: "EnterCommand";
+  src: url("/font/entercommand.woff2") format("woff2"),
+    url("/font/entercommand.woff") format("woff");
+}
