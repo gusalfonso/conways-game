@@ -280,3 +280,15 @@
     }
   }
 }
+
+@keyframes blink {
+  0%,
+  19% {
+    background: #ed9940;
+  }
+
+  20%,
+  99% {
+    background: #333;
+  }
+}

@@ -107,76 +107,75 @@
 
 // export default Monitor;
 
-import React, { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect } from "react";
 import "../styles/Monitor.css";
 import Board from "./Board";
 
 function Monitor() {
   const [powerOn, setPowerOn] = useState(false);
   const [showBoard, setShowBoard] = useState(false);
-  const screenRef = useRef<HTMLDivElement>(null);
-  const timersRef = useRef<number[]>([]);
 
   function handlePowerButtonClick() {
     const powerLed = document.querySelector(".power-led");
-    const screen = screenRef.current;
+    const screen = document.querySelector(".screen");
     if (!powerLed || !screen) return;
 
     powerLed.classList.toggle("on");
 
     if (powerLed.classList.contains("on")) {
       setPowerOn(true);
-      timersRef.current.forEach((timer) => clearTimeout(timer));
-      timersRef.current = [];
+      console.log(showBoard);
+      // timersRef.current.forEach((timer) => clearTimeout(timer));
+      // timersRef.current = [];
       screen.classList.remove("off");
-      startTyping(["cd game-of-life", "npm install", "npm run dev"]);
-      console.log(showBoard);
+      // startTyping(["cd game-of-life", "npm install", "npm run dev"]);
+      setShowBoard(true);
     } else {
-      setPowerOn(false);
-      screen.innerHTML = "";
-      timersRef.current.forEach((timer) => clearTimeout(timer));
-      timersRef.current = [];
-      screen.classList.add("off");
       console.log(showBoard);
+      setPowerOn(false);
+      // screen.innerHTML = "";
+      // timersRef.current.forEach((timer) => clearTimeout(timer));
+      // timersRef.current = [];
+      screen.classList.add("off");
+      setShowBoard(false);
     }
   }
 
-  function startTyping(texts: string[]) {
-    let wait = 750;
-    const screen = screenRef.current;
-    if (!screen) return;
+  // function startTyping(texts: string[]) {
+  //   let wait = 750;
+  //   const screen = screenRef.current;
+  //   if (!screen) return;
 
-    screen.innerHTML = "$ ";
-    texts.forEach((text) => {
-      wait += 750;
-      for (let i = 0; i < text.length; i++) {
-        const timer = setTimeout(() => {
-          if (screen) screen.innerHTML += text[i];
-        }, wait);
-        timersRef.current.push(timer);
-        wait += 50 + ~~(Math.random() * 50);
-      }
+  //   screen.innerHTML = "$ ";
+  //   texts.forEach((text) => {
+  //     wait += 750;
+  //     for (let i = 0; i < text.length; i++) {
+  //       const timer = setTimeout(() => {
+  //         if (screen) screen.innerHTML += text[i];
+  //       }, wait);
+  //       timersRef.current.push(timer);
+  //       wait += 50 + ~~(Math.random() * 50);
+  //     }
 
-      wait += 750;
+  //     wait += 750;
 
-      const timer = setTimeout(() => {
-        if (screen) screen.innerHTML += "<br>$ ";
-      }, wait);
-      timersRef.current.push(timer);
-    });
+  //     const timer = setTimeout(() => {
+  //       if (screen) screen.innerHTML += "<br>$ ";
+  //     }, wait);
+  //     timersRef.current.push(timer);
+  //   });
 
-    const clearScreenTimer = setTimeout(() => {
-      if (screen) screen.innerHTML = "";
-      setShowBoard(true);
-    }, wait + 1500);
-    timersRef.current.push(clearScreenTimer);
-  }
+  // const clearScreenTimer = setTimeout(() => {
+  //   setShowBoard(true);
+  // }, 1500);
+  // timersRef.current.push(clearScreenTimer);
+  // }
 
-  useEffect(() => {
-    return () => {
-      timersRef.current.forEach((timer) => clearTimeout(timer));
-    };
-  }, []);
+  // useEffect(() => {
+  //   return () => {
+  //     timersRef.current.forEach((timer) => clearTimeout(timer));
+  //   };
+  // }, []);
 
   return (
     <div className="container">
@@ -184,10 +183,7 @@ function Monitor() {
         <div className="monitor">
           <div className="monitor-inner">
             <div className="screen-container">
-              <div
-                className={`screen ${!powerOn ? "off" : ""}`}
-                ref={screenRef}
-              >
+              <div className={`screen ${!powerOn ? "off" : ""}`}>
                 {showBoard ? <Board /> : ""}
               </div>
             </div>

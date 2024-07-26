@@ -1,11 +1,11 @@
-import { useState, useRef, useCallback, useEffect } from "react";
+import { useCallback, useState, useRef, useEffect } from "react";
 import { createEmptyGrid, COLS, ROWS, DIRECTIONS } from "../utils/utils";
 import { PlayPauseButton } from "./PlayPauseButton";
 import { Button } from "./Button";
 import "../styles/Board.css";
 
-function Board() {
-  const [grid, setGrid] = useState(createEmptyGrid());
+const Board: React.FC = () => {
+  const [grid, setGrid] = useState<number[][]>(createEmptyGrid());
   const [active, setActive] = useState(false);
   const [mouseDown, setMouseDown] = useState(false);
 
@@ -54,34 +54,32 @@ function Board() {
     }
   }, [active, runGame]);
 
-  function handleMouseDown() {
+  const handleMouseDown = () => {
     setMouseDown(true);
-  }
+  };
 
-  function handleMouseUp() {
+  const handleMouseUp = () => {
     setMouseDown(false);
-  }
+  };
 
-  function handleToggle(row: number, col: number) {
+  const handleToggle = (row: number, col: number) => {
     if (mouseDown) {
       toggleCell(row, col);
     }
-  }
+  };
 
-  function toggleCell(rowToToggle: number, colToToggle: number) {
-    setGrid((prevGrid) => {
-      const newGrid = prevGrid.map((row, rowIndex) =>
-        row.map((cell, colIndex) =>
-          rowIndex === rowToToggle && colIndex === colToToggle
-            ? cell
-              ? 0
-              : 1
-            : cell
-        )
-      );
-      return newGrid;
-    });
-  }
+  const toggleCell = (rowToToggle: number, colToToggle: number) => {
+    const newGrid = grid.map((row, rowIndex) =>
+      row.map((cell, colIndex) =>
+        rowIndex === rowToToggle && colIndex === colToToggle
+          ? cell
+            ? 0
+            : 1
+          : cell
+      )
+    );
+    setGrid(newGrid);
+  };
 
   return (
     <div className="board-container">
@@ -96,7 +94,7 @@ function Board() {
         }
       >
         {grid.map((rows, originalRowIndex) =>
-          rows.map((originalColIndex) => (
+          rows.map((col, originalColIndex) => (
             <button
               onMouseDown={handleMouseDown}
               onMouseUp={handleMouseUp}
@@ -136,12 +134,12 @@ function Board() {
         <PlayPauseButton
           active={active}
           onClick={() => {
-            setActive((prevActive) => !prevActive);
+            setActive(!active);
           }}
         />
       </div>
     </div>
   );
-}
+};
 
 export default Board;
