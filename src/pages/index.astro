@@ -1,16 +1,12 @@
 ---
 import Layout from "../layouts/Layout.astro";
-import Board from "../components/Board";
 import Monitor from "../components/Monitor";
 import "../styles/index.css";
-import TypingComponentTest from "../components/Prueba";
 ---
 
 <Layout title="Conway's Game">
   <main class="main-container">
     <Monitor client:only />
-    <!-- <Board client:only /> -->
-    <!-- <TypingComponentTest client:only /> -->
   </main>
 </Layout>
 

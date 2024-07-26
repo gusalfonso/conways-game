@@ -1,11 +1,11 @@
-import { useCallback, useState, useRef, useEffect } from "react";
+import React, { useState, useRef, useCallback, useEffect } from "react";
 import { createEmptyGrid, COLS, ROWS, DIRECTIONS } from "../utils/utils";
 import { PlayPauseButton } from "./PlayPauseButton";
 import { Button } from "./Button";
 import "../styles/Board.css";
 
-const Board: React.FC = () => {
-  const [grid, setGrid] = useState<number[][]>(createEmptyGrid());
+function Board() {
+  const [grid, setGrid] = useState(createEmptyGrid());
   const [active, setActive] = useState(false);
   const [mouseDown, setMouseDown] = useState(false);
 
@@ -54,32 +54,34 @@ const Board: React.FC = () => {
     }
   }, [active, runGame]);
 
-  const handleMouseDown = () => {
+  function handleMouseDown() {
     setMouseDown(true);
-  };
+  }
 
-  const handleMouseUp = () => {
+  function handleMouseUp() {
     setMouseDown(false);
-  };
+  }
 
-  const handleToggle = (row: number, col: number) => {
+  function handleToggle(row: number, col: number) {
     if (mouseDown) {
       toggleCell(row, col);
     }
-  };
+  }
 
-  const toggleCell = (rowToToggle: number, colToToggle: number) => {
-    const newGrid = grid.map((row, rowIndex) =>
-      row.map((cell, colIndex) =>
-        rowIndex === rowToToggle && colIndex === colToToggle
-          ? cell
-            ? 0
-            : 1
-          : cell
-      )
-    );
-    setGrid(newGrid);
-  };
+  function toggleCell(rowToToggle: number, colToToggle: number) {
+    setGrid((prevGrid) => {
+      const newGrid = prevGrid.map((row, rowIndex) =>
+        row.map((cell, colIndex) =>
+          rowIndex === rowToToggle && colIndex === colToToggle
+            ? cell
+              ? 0
+              : 1
+            : cell
+        )
+      );
+      return newGrid;
+    });
+  }
 
   return (
     <div className="board-container">
@@ -134,12 +136,12 @@ const Board: React.FC = () => {
         <PlayPauseButton
           active={active}
           onClick={() => {
-            setActive(!active);
+            setActive((prevActive) => !prevActive);
           }}
         />
       </div>
     </div>
   );
-};
+}
 
 export default Board;

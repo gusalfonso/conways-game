@@ -110,7 +110,6 @@
 import React, { useState, useRef, useEffect } from "react";
 import "../styles/Monitor.css";
 import Board from "./Board";
-import { setSourceMapRange } from "typescript";
 
 function Monitor() {
   const [powerOn, setPowerOn] = useState(false);
