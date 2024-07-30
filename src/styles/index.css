@@ -3,6 +3,13 @@ body {
   height: 100dvh;
   background-repeat: no-repeat;
   background-size: cover;
-  background-position: bottom;
-  overflow-x: hidden;
+  background-position: center;
+  overflow: hidden;
+}
+
+main {
+  display: flex;
+  justify-content: end;
+  align-items: center;
+  height: 100%;
 }

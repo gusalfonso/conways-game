@@ -107,7 +107,7 @@
 
 // export default Monitor;
 
-import { useState, useRef, useEffect } from "react";
+import { useState } from "react";
 import "../styles/Monitor.css";
 import Board from "./Board";
 
