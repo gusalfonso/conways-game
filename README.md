@@ -1,6 +1,6 @@
 # Conway's Game of Life
 
-![Conway's Game of Life]('/img/conwaysgame.png')
+![Conway's Game of Life]('public/img/conwaysgame.png')
 
 ## Description
 Conway's Game of Life is a cellular automaton devised by mathematician John Conway. This application simulates the Game of Life, providing an interactive experience to observe how patterns evolve over time based on simple rules. 
